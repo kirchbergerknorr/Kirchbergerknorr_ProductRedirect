@@ -1,0 +1,51 @@
+<?php
+/**
+ * @category    Kirchbergerknorr
+ * @package     Kirchbergerknorr_Default
+ * @author      Oliver Sokola <oliver.sokola@kirchbergerknorr.de>
+ * @copyright   Copyright (c) 2015 kirchbergerknorr GmbH (http://www.kirchbergerknorr.de)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/**
+ * @block: Kirchbergerknorr_ProductRedirect_Block_Productredirect
+ */
+?>
+
+<?php
+$name = $this->getRedirectProductName();
+$description = $this->getRedirectProductDesc();
+$categoryIds = $this->getRedirectProductCategoryIds();
+$helper = Mage::helper('productredirect/data');
+?>
+
+<div>
+    <h1>
+        <?php echo $this->__('We are sorry')?>
+    </h1>
+    <p>
+        <?php echo $this->__("Our product \"%s\" is no longer available.", $name);?>
+    </p>
+    <div>
+        <?php if(is_array($categoryIds) && $categoryIds[0] !== 0 && $helper->DoCategoriesExist($categoryIds)):?>
+            <?php echo $this->__("You might be interested in these products:") ?>
+            <br/><br/>
+            <ul>
+                <?php foreach($categoryIds as $categoryId):?>
+                    <?php
+                        $catUrl = $helper->getCategoryUrl($categoryId);
+                        $catName = $helper->getCategoryName($categoryId);
+                    ?>
+                    <?php if(!empty($catUrl) && !empty($catName)): ?>
+                        <li>
+                            <a href="<?php echo $catUrl?>">
+                                <?php echo $catName?>
+                            </a>
+                        </li>
+                    <?php endif ?>
+                <?php endforeach ?>
+            </ul>
+        <?php endif;?>
+        <br>
+    </div>
+</div>

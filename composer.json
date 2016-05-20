@@ -1,0 +1,13 @@
+{
+    "name": "kirchbergerknorr/product_redirect",
+    "description": "Save general info of deleted products and display related products instead of 404 - page",
+    "type": "magento-module",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "Oliver Sokola",
+            "email": "os@kirchbergerknorr.de"
+        }
+    ],
+    "require": {}
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Kirchbergerknorr_ProductRedirect>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Core/>
+
+            </depends>
+        </Kirchbergerknorr_ProductRedirect>
+    </modules>
+</config>

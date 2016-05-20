@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Kirchbergerknorr_ProductRedirect>
+            <version>0.1.0</version>
+        </Kirchbergerknorr_ProductRedirect>
+    </modules>
+
+    <global>
+        <!-- MODELS & MODEL-RESOURCES -->
+        <models>
+            <productredirect>
+                <class>Kirchbergerknorr_ProductRedirect_Model</class>
+                <resourceModel>productredirect_resource</resourceModel>
+            </productredirect>
+            <productredirect_resource>
+                <class>Kirchbergerknorr_ProductRedirect_Model_Resource</class>
+                <entities>
+                    <product>
+                        <table>catalog_product_redirect</table>
+                    </product>
+                </entities>
+            </productredirect_resource>
+        </models>
+        <!-- BLOCKS -->
+        <blocks>
+            <kirchbergerknorr_productredirect>
+                <class>Kirchbergerknorr_ProductRedirect_Block</class>
+            </kirchbergerknorr_productredirect>
+        </blocks>
+        <!-- HELPERS -->
+        <helpers>
+            <productredirect>
+                <class>Kirchbergerknorr_ProductRedirect_Helper</class>
+            </productredirect>
+        </helpers>
+        <!-- RESOURCES -->
+        <resources>
+            <kirchbergerknorr_productredirect_setup>
+                <setup>
+                    <module>Kirchbergerknorr_ProductRedirect</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
+                </setup>
+            </kirchbergerknorr_productredirect_setup>
+        </resources>
+    </global>
+
+    <adminhtml>
+        <!-- EVENTS -->
+        <events>
+            <catalog_product_delete_before>
+                <observers>
+                    <product_delete_alert>
+                        <type>singleton</type>
+                        <class>Kirchbergerknorr_ProductRedirect_Model_Observer</class>
+                        <method>saveDeletedProductInfo</method>
+                    </product_delete_alert>
+                </observers>
+            </catalog_product_delete_before>
+        </events>
+    </adminhtml>
+
+    <frontend>
+        <!-- ROUTERS -->
+        <routers>
+            <productredirect>
+                <use>standard</use>
+                <args>
+                    <module>Kirchbergerknorr_ProductRedirect</module>
+                    <frontName>productredirect</frontName>
+                </args>
+            </productredirect>
+        </routers>
+        <!-- LAYOUTS -->
+        <layout>
+            <updates>
+                <Redirect>
+                    <file>kk_productredirect.xml</file>
+                </Redirect>
+            </updates>
+        </layout>
+        <!-- TRANSLATIONS -->
+        <translate>
+            <modules>
+                <Kirchbergerknorr_ProductRedirect>
+                    <files>
+                        <default>Kirchbergerknorr_Productredirect.csv</default>
+                    </files>
+                </Kirchbergerknorr_ProductRedirect>
+            </modules>
+        </translate>
+    </frontend>
+
+</config>
