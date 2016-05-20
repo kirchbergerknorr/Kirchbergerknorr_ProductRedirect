@@ -1,5 +1,5 @@
 app/code/local/Kirchbergerknorr/ProductRedirect app/code/local/Kirchbergerknorr/ProductRedirect
-app/design/frontend/base/default/layout/kk_productredirect.mxl app/design/frontend/base/default/layout/kk_productredirect.mxl
+app/design/frontend/base/default/layout/kk_productredirect.xml app/design/frontend/base/default/layout/kk_productredirect.xml
 app/design/frontend/base/default/template/kirchbergerknorr/productredirect/productredirect.phtml app/design/frontend/base/default/template/kirchbergerknorr/productredirect/productredirect.phtml
 app/etc/modules/Kirchbergerknorr_ProductRedirect.xml app/etc/modules/Kirchbergerknorr_ProductRedirect.xml
 app/locale/de_DE/Kirchbergerknorr_Productredirect.csv app/locale/de_DE/Kirchbergerknorr_Productredirect.csv
