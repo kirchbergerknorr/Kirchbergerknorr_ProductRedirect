@@ -24,7 +24,7 @@ $helper = Mage::helper('productredirect/data');
         <?php echo $this->__('We are sorry')?>
     </h1>
     <p>
-        <?php echo $this->__("Our product \"%s\" is no longer available.", $name);?>
+        <?php echo $this->__("Our product \"%s\" is no longer available.", "<strong>".$name."</strong>");?>
     </p>
     <div>
         <?php if(is_array($categoryIds) && $categoryIds[0] !== 0 && $helper->DoCategoriesExist($categoryIds)):?>
