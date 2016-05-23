@@ -44,10 +44,17 @@ class Kirchbergerknorr_ProductRedirect_Model_Resource_Product extends Mage_Core_
                     $categoryIdsToString .= ',';
                 }
 
-                // Save all category url paths
-                $catUrlProductPaths[] = str_replace(".html", "/", Mage::getModel('catalog/category')->load($catId)->getUrlPath()) . $urlPath;
+                // Save all category url paths for each store view
+                foreach (Mage::app()->getStores() as $store)
+                {
+                    $env = Mage::getSingleton('core/app_emulation')->startEnvironmentEmulation($store);
+                    $catUrlProductPaths[] = str_replace(".html", "/", Mage::getModel('catalog/category')->load($catId)->getUrlPath()) . $urlPath;
+                    Mage::getSingleton('core/app_emulation')->stopEnvironmentEmulation($env);
+                }
             }
         }
+		// Remove duplicate entries
+        $catUrlProductPaths = array_unique($catUrlProductPaths);
 
         // save names from all store views
         $names = Mage::helper('productredirect/data')->getProductFieldsFromAllStoreViews($product, 'name');
