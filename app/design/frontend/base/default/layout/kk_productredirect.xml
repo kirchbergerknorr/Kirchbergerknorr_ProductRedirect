@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <layout version="0.1.0">
     <productredirect_index_product>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>css/productredirect.css</name></action>
+        </reference>
         <reference name="content">
             <block type="kirchbergerknorr_productredirect/productredirect" name="productredirect"
                    template="kirchbergerknorr/productredirect/productredirect.phtml"/>

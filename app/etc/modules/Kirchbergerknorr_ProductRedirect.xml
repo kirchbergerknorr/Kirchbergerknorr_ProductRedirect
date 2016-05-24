@@ -3,7 +3,7 @@
     <modules>
         <Kirchbergerknorr_ProductRedirect>
             <active>true</active>
-            <codePool>local</codePool>
+            <codePool>community</codePool>
             <depends>
                 <Mage_Core/>
 

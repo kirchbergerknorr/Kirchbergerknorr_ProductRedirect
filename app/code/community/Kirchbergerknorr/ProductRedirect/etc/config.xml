@@ -58,6 +58,28 @@
                 </observers>
             </catalog_product_delete_before>
         </events>
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <product_redirect>
+                                            <title>Product Redirect</title>
+                                        </product_redirect>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
     </adminhtml>
 
     <frontend>
