@@ -31,12 +31,13 @@ class Kirchbergerknorr_ProductRedirect_IndexController extends Mage_Core_Control
 
     protected function getHttpStatusCode()
     {
-        $codes = [
+        $codes = array(
             301 => ['status' => "301 Moved Permanently"],
             302 => ['status' => "302 Found"],
             404 => ['status' => "404 Not Found"],
-            410 => ['status' => "410 Gone"],
-        ];
+            410 => ['status' => "410 Gone"]
+        );
+
         if($code = Mage::getStoreConfig('product_redirect/general/status_codes')) {
             if(isset($codes[$code])) {
                 return $codes[$code]['status'];
