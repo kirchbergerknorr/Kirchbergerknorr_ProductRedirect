@@ -55,18 +55,8 @@ class Kirchbergerknorr_ProductRedirect_Model_Resource_Product extends Mage_Core_
                 {
                     $categoryIdsToString .= ',';
                 }
-
-                // Save all category url paths for each store view
-                foreach (Mage::app()->getStores() as $store)
-                {
-                    $env = Mage::getSingleton('core/app_emulation')->startEnvironmentEmulation($store);
-                    $catUrlProductPaths[] = str_replace(".html", "/", Mage::getModel('catalog/category')->load($catId)->getUrlPath()) . $urlPath;
-                    Mage::getSingleton('core/app_emulation')->stopEnvironmentEmulation($env);
-                }
             }
         }
-        // Remove duplicate entries
-        $catUrlProductPaths = array_unique($catUrlProductPaths);
 
         // save names from all store views
         $names = Mage::helper('productredirect/data')->getProductFieldsFromAllStoreViews($product, 'name');
@@ -89,56 +79,40 @@ class Kirchbergerknorr_ProductRedirect_Model_Resource_Product extends Mage_Core_
         // Redirect product urls to redirection page
         if(!empty($urlPath))
         {
+            $this->updateUrlRewrite($urlPath, $id);
+        }
+
+        foreach($catUrlProductPaths as $catUrl)
+        {
+            $this->updateUrlRewrite($catUrl, $id);
+        }
+    }
+
+    protected function updateUrlRewrite($requestUrl, $id)
+    {
+        if(!empty($requestUrl))
+        {
             $rewrite = Mage::getModel('core/url_rewrite')
                 ->setStoreId($this->_defaultView)
-                ->loadByRequestPath($urlPath);
+                ->loadByRequestPath($requestUrl);
 
-            // If rewrite exists, update all url rewrites and set new target path
             if($rewrite->getId()) {
-                $query = "UPDATE core_url_rewrite SET target_path = :target_path WHERE request_path = :request_path";
+                $query = "UPDATE core_url_rewrite SET target_path = :target_path WHERE product_id = :product_id";
                 $binds = array(
                     'target_path' => 'productredirect/index/product/id/' . $id,
-                    'request_path' => $urlPath
+                    'product_id' => $id
                 );
 
                 $this->_write->query( $query, $binds );
             } else {
                 $rewrite = Mage::getModel('core/url_rewrite');
                 $rewrite->setOptions('RP')
-                    ->setIdPath('productredirect/' . $id)
+                    ->setRequestPath($requestUrl)
+                    ->setIdPath('productredirect/' . $requestUrl)
                     ->setTargetPath('productredirect/index/product/id/' . $id)
-                    ->setRequestPath($urlPath)
                     ->setData('is_deleted', 1);
+
                 $rewrite->save();
-            }
-        }
-
-        foreach($catUrlProductPaths as $catUrl)
-        {
-            if(!empty($catUrl))
-            {
-                $rewriteCat = Mage::getModel('core/url_rewrite')
-                    ->setStoreId($this->_defaultView)
-                    ->loadByRequestPath($catUrl);
-
-                if($rewriteCat->getId()) {
-                    $query = "UPDATE core_url_rewrite SET target_path = :target_path WHERE request_path = :request_path";
-                    $binds = array(
-                        'target_path' => 'productredirect/index/product/id/' . $id,
-                        'request_path' => $catUrl
-                    );
-
-                    $this->_write->query( $query, $binds );
-                } else {
-                    $rewriteCat = Mage::getModel('core/url_rewrite');
-                    $rewriteCat->setOptions('RP')
-                        ->setRequestPath($catUrl)
-                        ->setIdPath('productredirect/' . $catUrl)
-                        ->setTargetPath('productredirect/index/product/id/' . $id)
-                        ->setData('is_deleted', 1);
-
-                    $rewriteCat->save();
-                }
             }
         }
     }
