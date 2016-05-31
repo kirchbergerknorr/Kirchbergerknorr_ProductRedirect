@@ -10,8 +10,19 @@
 
 class Kirchbergerknorr_ProductRedirect_Model_Resource_Product extends Mage_Core_Model_Resource_Db_Abstract
 {
+
+    protected $_defaultView;
+    protected $_write;
+
     protected function _construct()
     {
+        $this->_defaultView = Mage::app()
+            ->getWebsite(true)
+            ->getDefaultGroup()
+            ->getDefaultStoreId();
+
+        $this->_write = Mage::getSingleton( 'core/resource' )->getConnection( 'core_write' );
+
         $this->_init('productredirect/product', 'redirect_id');
     }
 
@@ -24,6 +35,7 @@ class Kirchbergerknorr_ProductRedirect_Model_Resource_Product extends Mage_Core_
      */
     public function saveDeletedProduct($product)
     {
+        $product = Mage::getModel('catalog/product')->setStoreId($this->_defaultView)->load($product->getId());
         $categoryIds = $product->getCategoryIds();
         $urlPath = $product->getUrlPath();
         $id = $product->getId();
@@ -53,7 +65,7 @@ class Kirchbergerknorr_ProductRedirect_Model_Resource_Product extends Mage_Core_
                 }
             }
         }
-		// Remove duplicate entries
+        // Remove duplicate entries
         $catUrlProductPaths = array_unique($catUrlProductPaths);
 
         // save names from all store views
@@ -77,26 +89,56 @@ class Kirchbergerknorr_ProductRedirect_Model_Resource_Product extends Mage_Core_
         // Redirect product urls to redirection page
         if(!empty($urlPath))
         {
-            $rewrite = Mage::getModel('core/url_rewrite');
-            $rewrite->setOptions('RP')
-                ->setIdPath('productredirect/' . $id)
-                ->setTargetPath('productredirect/index/product/id/' . $id)
-                ->setRequestPath($urlPath)
-                ->setData('is_deleted', 1)
-                ->save();
+            $rewrite = Mage::getModel('core/url_rewrite')
+                ->setStoreId($this->_defaultView)
+                ->loadByRequestPath($urlPath);
+
+            // If rewrite exists, update all url rewrites and set new target path
+            if($rewrite->getId()) {
+                $query = "UPDATE core_url_rewrite SET target_path = :target_path WHERE request_path = :request_path";
+                $binds = array(
+                    'target_path' => 'productredirect/index/product/id/' . $id,
+                    'request_path' => $urlPath
+                );
+
+                $this->_write->query( $query, $binds );
+            } else {
+                $rewrite = Mage::getModel('core/url_rewrite');
+                $rewrite->setOptions('RP')
+                    ->setIdPath('productredirect/' . $id)
+                    ->setTargetPath('productredirect/index/product/id/' . $id)
+                    ->setRequestPath($urlPath)
+                    ->setData('is_deleted', 1);
+                $rewrite->save();
+            }
         }
 
         foreach($catUrlProductPaths as $catUrl)
         {
             if(!empty($catUrl))
             {
-                $rewriteCat = Mage::getModel('core/url_rewrite');
-                $rewriteCat ->setOptions('RP')
-                    ->setRequestPath($catUrl)
-                    ->setIdPath('productredirect/' . $catUrl)
-                    ->setTargetPath('productredirect/index/product/id/' . $id)
-                    ->setData('is_deleted', 1)
-                    ->save();
+                $rewriteCat = Mage::getModel('core/url_rewrite')
+                    ->setStoreId($this->_defaultView)
+                    ->loadByRequestPath($catUrl);
+
+                if($rewriteCat->getId()) {
+                    $query = "UPDATE core_url_rewrite SET target_path = :target_path WHERE request_path = :request_path";
+                    $binds = array(
+                        'target_path' => 'productredirect/index/product/id/' . $id,
+                        'request_path' => $catUrl
+                    );
+
+                    $this->_write->query( $query, $binds );
+                } else {
+                    $rewriteCat = Mage::getModel('core/url_rewrite');
+                    $rewriteCat->setOptions('RP')
+                        ->setRequestPath($catUrl)
+                        ->setIdPath('productredirect/' . $catUrl)
+                        ->setTargetPath('productredirect/index/product/id/' . $id)
+                        ->setData('is_deleted', 1);
+
+                    $rewriteCat->save();
+                }
             }
         }
     }
