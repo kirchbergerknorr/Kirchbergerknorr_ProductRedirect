@@ -43,9 +43,6 @@
                 </setup>
             </kirchbergerknorr_productredirect_setup>
         </resources>
-    </global>
-
-    <adminhtml>
         <!-- EVENTS -->
         <events>
             <catalog_product_delete_before>
@@ -58,6 +55,9 @@
                 </observers>
             </catalog_product_delete_before>
         </events>
+    </global>
+
+    <adminhtml>
         <acl>
             <resources>
                 <all>
